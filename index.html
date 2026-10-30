@@ -342,10 +342,22 @@ input{font-family:inherit}
         </div>
       </div>
 
-      <div style="position:relative;background:#dff1e6;border:4px solid #fff;border-radius:26px;padding:14px 16px;box-shadow:0 5px 0 #bfe0cb">
-        <div style="font-size:12.5px;color:#2e7d4f;font-weight:600">ควรใช้ภายใน</div>
-        <div style="font-size:19px;font-weight:800;color:#12357a">{{ draftExp }}</div>
-        <div style="font-size:12.5px;color:#3f6a52;margin-top:2px">{{ draft.tip }}</div>
+      <div style="flex:none;position:relative;background:#dff1e6;border:4px solid #fff;border-radius:26px;padding:14px 14px 12px;box-shadow:0 5px 0 #bfe0cb;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+          <div style="font-size:15px;font-weight:800;color:#12357a">ควรกินภายในกี่วัน</div>
+          <div style="font-size:12px;color:#2e7d4f;font-weight:600">เข้าตู้ {{ shelf.inDate }}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <sc-for list="{{ shelf.opts }}" as="o" hint-placeholder-count="2">
+          <button onClick="{{ o.pick }}" style="text-align:left;border-radius:18px;border:3px solid {{ o.border }};background:{{ o.bg }};padding:10px 10px 9px;display:flex;flex-direction:column;gap:2px;color:#12357a;min-width:0" style-active="transform:scale(.97)">
+            <span style="font-size:12px;font-weight:700;color:{{ o.labelInk }}">{{ o.icon }} {{ o.label }}</span>
+            <span style="font-size:24px;font-weight:800;line-height:1.15">{{ o.days }} <span style="font-size:14px;font-weight:700">วัน</span></span>
+            <span style="font-size:11.5px;color:#68758a">{{ o.approx }}</span>
+            <span style="font-size:12.5px;font-weight:700;color:{{ o.dateInk }}">กินก่อน {{ o.date }}</span>
+          </button>
+          </sc-for>
+        </div>
+        <div style="font-size:12.5px;color:#3f6a52;line-height:1.45">💡 {{ draft.tip }}</div>
       </div>
 
       <button onClick="{{ submitAdd }}" style="height:60px;border:4px solid #fff;border-radius:24px;background:#ff8a1f;color:#fff;font-size:18px;font-weight:700;box-shadow:0 6px 0 #d9640a;flex:none" style-active="transform:translateY(4px);box-shadow:0 2px 0 #d9640a">＋ เพิ่มเข้าตู้เย็น</button>
@@ -474,6 +486,8 @@ function tone(d) {
   if (d <= 5) return { pillBg: '#fff6c9', pillInk: '#9a7d00', tile: '#fffadf', left: 'อีก ' + d + ' วัน' };
   return { pillBg: '#dff1e6', pillInk: '#2e8a55', tile: '#eaf6ee', left: 'อีก ' + d + ' วัน' };
 }
+const thDateY = n => { const t = new Date(); t.setDate(t.getDate() + n); return t.toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' }); };
+const approxDays = n => n >= 365 ? 'ประมาณ ' + Math.round(n / 365) + ' ปี' : n >= 60 ? 'ประมาณ ' + Math.round(n / 30) + ' เดือน' : n >= 14 ? 'ประมาณ ' + Math.round(n / 7) + ' สัปดาห์' : n <= 1 ? (n === 0 ? 'กินวันนี้' : 'กินภายในพรุ่งนี้') : 'นับจากวันที่เข้าตู้';
 const thDate = n => { const t = new Date(); t.setDate(t.getDate() + n); return t.toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'short' }); };
 
 const URGENT = {
@@ -628,6 +642,12 @@ class Component extends DCLogic {
       pickKey: s.pickKey,
       draft: d || { icon: '', name: '', qty: 0, unit: '', days: 0, tip: '' },
       draftExp: d ? thDate(d.days) : '',
+      shelf: (() => {
+        if (!d) return { inDate: '', opts: [] };
+        const p = PRESETS.find(x => x.icon === d.icon) || { days: d.days, frz: d.days };
+        const mk = (loc, label, icon, base) => { const on = d.loc === loc; const n = on ? d.days : base; return { label, icon, days: n, approx: approxDays(n), date: thDateY(n), bg: on ? '#fff' : 'rgba(255,255,255,.55)', border: on ? '#1764c0' : 'transparent', labelInk: on ? '#1764c0' : '#68758a', dateInk: n <= 2 ? '#d9480f' : '#2e7d4f', pick: () => (loc === 'fridge' ? this.setState(st => ({ draft: { ...st.draft, loc: 'fridge', days: p.days } })) : this.setState(st => ({ draft: { ...st.draft, loc: 'freezer', days: p.frz } }))) }; };
+        return { inDate: thDateY(0), opts: [mk('fridge', 'แช่ปกติ', '🧊', p.days), mk('freezer', 'แช่แข็ง', '❄', p.frz)] };
+      })(),
       presetCats: PRESET_CATS.map(c => { const on = (s.presetCat || 'ทั้งหมด') === c; return { name: c, bg: on ? '#ff8a1f' : '#fff', ink: on ? '#fff' : '#18345e', edge: on ? '#d96d0c' : '#efe6d6', pick: () => this.setState({ presetCat: c }) }; }),
       presets: PRESETS.filter(p => !s.presetCat || s.presetCat === 'ทั้งหมด' || p.cat === s.presetCat).map(p => {
         const on = d && d.icon === p.icon;
