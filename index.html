@@ -37,6 +37,7 @@ input{font-family:inherit}
 @keyframes fall{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),620px) rotate(var(--rot));opacity:0}}
 @keyframes leaveUsed{0%{transform:none;opacity:1}30%{transform:scale(1.05)}100%{transform:translateX(120%) rotate(8deg);opacity:0}}
 @keyframes leaveWaste{0%,100%{opacity:1}10%,30%,50%{transform:translateX(-8px) rotate(-2deg)}20%,40%{transform:translateX(8px) rotate(2deg)}100%{transform:translateY(40px) scale(.7);opacity:0}}
+@keyframes navBounce{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-12px) scale(1.18,1.1) rotate(-8deg)}55%{transform:translateY(0) scale(1.12,.88)}75%{transform:translateY(-4px) scale(.96,1.04) rotate(4deg)}100%{transform:translateY(0) scale(1)}}
 @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg) scale(1.08)}75%{transform:rotate(8deg) scale(1.08)}}
 @keyframes ring{0%,100%{transform:rotate(0)}10%,30%{transform:rotate(-12deg)}20%,40%{transform:rotate(12deg)}50%{transform:rotate(0)}}
 @keyframes shine{0%{transform:translateX(-120%) skewX(-20deg)}60%,100%{transform:translateX(320%) skewX(-20deg)}}
@@ -276,14 +277,14 @@ input{font-family:inherit}
   <div style="position:absolute;left:12px;right:12px;bottom:14px;z-index:30;height:76px;border-radius:30px;background:{{ navc.bg }};box-shadow:0 10px 30px -8px rgba(24,52,94,.25),0 4px 0 {{ navc.edge }};transition:background-color .3s;display:grid;grid-template-columns:1fr 1fr 84px 1fr 1fr;align-items:center">
     <sc-for list="{{ navLeft }}" as="n" hint-placeholder-count="2">
       <button onClick="{{ n.go }}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:{{ n.ink }};font-size:11.5px;font-weight:600">
-        <span style="{{ n.iconStyle }}"><img src="{{ n.icon }}" alt="" style="height:36px;max-width:46px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))"></span>{{ n.label }}</button>
+        <span key="{{ n.tapKey }}" style="{{ n.iconStyle }}"><img src="{{ n.icon }}" alt="" style="height:36px;max-width:46px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))"></span>{{ n.label }}</button>
     </sc-for>
     <div style="display:flex;justify-content:center">
       <button onClick="{{ openAdd }}" aria-label="เพิ่มวัตถุดิบ" style="width:66px;height:66px;margin-top:-34px;border-radius:24px;border:5px solid #fff;background:{{ navc.plus }};color:#fff;font-size:36px;font-weight:700;line-height:1;box-shadow:0 6px 0 {{ navc.plusEdge }},0 12px 20px -6px rgba(24,52,94,.4);transform:rotate(-6deg);padding:0" style-active="transform:rotate(-6deg) translateY(4px)">+</button>
     </div>
     <sc-for list="{{ navRight }}" as="n" hint-placeholder-count="2">
       <button onClick="{{ n.go }}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:{{ n.ink }};font-size:11.5px;font-weight:600">
-        <span style="{{ n.iconStyle }}"><img src="{{ n.icon }}" alt="" style="height:36px;max-width:46px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))"></span>{{ n.label }}</button>
+        <span key="{{ n.tapKey }}" style="{{ n.iconStyle }}"><img src="{{ n.icon }}" alt="" style="height:36px;max-width:46px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))"></span>{{ n.label }}</button>
     </sc-for>
   </div>
 
@@ -301,9 +302,14 @@ input{font-family:inherit}
         <button onClick="{{ closeAdd }}" aria-label="ปิด" style="width:40px;height:40px;border-radius:14px;border:0;background:#f2ece0;color:#68758a;font-size:18px;flex:none">✕</button>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-        <sc-for list="{{ presets }}" as="p" hint-placeholder-count="12">
-        <button onClick="{{ p.pick }}" style="height:78px;border-radius:22px;border:3px solid {{ p.border }};background:{{ p.bg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;font-size:11.5px;font-weight:600;color:#18345e;box-shadow:0 3px 0 {{ p.edge }}" style-active="transform:scale(.94)">
+      <div style="display:flex;gap:6px;overflow-x:auto;padding:2px 2px 6px;margin:0 -2px;scrollbar-width:none">
+        <sc-for list="{{ presetCats }}" as="c" hint-placeholder-count="8">
+        <button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:0;background:{{ c.bg }};color:{{ c.ink }};font-size:13px;font-weight:700;box-shadow:0 3px 0 {{ c.edge }};white-space:nowrap" style-active="transform:translateY(2px)">{{ c.name }}</button>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:262px;overflow-y:auto;padding:2px 2px 6px;margin:-2px -2px 0">
+        <sc-for list="{{ presets }}" as="p" hint-placeholder-count="60">
+        <button onClick="{{ p.pick }}" style="height:78px;border-radius:22px;border:3px solid {{ p.border }};background:{{ p.bg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;font-size:11px;line-height:1.15;text-align:center;font-weight:600;color:#18345e;box-shadow:0 3px 0 {{ p.edge }}" style-active="transform:scale(.94)">
           <img src="{{ p.icon }}" alt="" style="height:44px;max-width:60px;object-fit:contain">{{ p.name }}</button>
         </sc-for>
       </div>
@@ -384,19 +390,68 @@ const SEED = [
 ].map(([name, qty, icon, d, loc, total]) => ({ id: 'i' + (uid++), name, qty, icon, d, loc, total }));
 
 const PRESETS = [
-  { name: 'หมูสับ', icon: F(10), unit: 'ก.', qty: 300, step: 100, days: 3, frz: 120, tip: 'แบ่งเป็นมื้อแล้วแช่แข็ง เก็บชั้นล่างสุด' },
-  { name: 'ไก่', icon: F(11), unit: 'ชิ้น', qty: 2, step: 1, days: 3, frz: 120, tip: 'เก็บชั้นล่างสุด กันน้ำหยดใส่ของอื่น' },
-  { name: 'ปลา', icon: F(12), unit: 'ตัว', qty: 1, step: 1, days: 2, frz: 90, tip: 'ล้างซับให้แห้ง แช่ช่องล่างสุด' },
-  { name: 'นมสด', icon: F(1), unit: 'ลิตร', qty: 1, step: 1, days: 7, frz: 30, tip: 'เปิดแล้วใช้ภายใน 5–7 วัน เก็บชั้นใน' },
-  { name: 'ไข่', icon: F(8), unit: 'ฟอง', qty: 6, step: 1, days: 21, frz: 21, tip: 'เก็บในแผงชั้นกลาง ไม่ต้องล้างก่อนเก็บ' },
-  { name: 'โยเกิร์ต', icon: F(3), unit: 'ถ้วย', qty: 2, step: 1, days: 10, frz: 30, tip: 'ดูวันหมดอายุบนฉลากเป็นหลัก' },
-  { name: 'แครอท', icon: F(13), unit: 'หัว', qty: 2, step: 1, days: 10, frz: 60, tip: 'แยกจากผลไม้สุก ผักจะอยู่ได้นานขึ้น' },
-  { name: 'บร็อคโคลี', icon: F(14), unit: 'หัว', qty: 1, step: 1, days: 5, frz: 60, tip: 'ห่อกระดาษหมาดๆ ใส่ช่องผัก' },
-  { name: 'มะเขือเทศ', icon: F(16), unit: 'ลูก', qty: 4, step: 1, days: 10, frz: 60, tip: 'เก็บแยกจากผักใบ' },
-  { name: 'สตรอว์เบอร์รี่', icon: F(27), unit: 'กล่อง', qty: 1, step: 1, days: 4, frz: 90, tip: 'อย่าล้างก่อนเก็บ ล้างตอนจะกิน' },
-  { name: 'ขนมปัง', icon: B(31), unit: 'แถว', qty: 1, step: 1, days: 5, frz: 60, tip: 'แช่แข็งเป็นแผ่น ปิ้งได้ทันที' },
-  { name: 'เค้ก', icon: B(37), unit: 'ชิ้น', qty: 1, step: 1, days: 3, frz: 30, tip: 'ใส่กล่องปิดสนิท กันกลิ่นในตู้' }
+  { name: 'นมสด', icon: F(1), unit: 'ลิตร', qty: 1, step: 1, days: 7, frz: 30, cat: 'นมไข่', tip: 'เปิดแล้วใช้ภายใน 5–7 วัน เก็บชั้นใน' },
+  { name: 'นมขวด', icon: F(2), unit: 'ขวด', qty: 1, step: 1, days: 7, frz: 30, cat: 'นมไข่', tip: 'ปิดฝาให้สนิท เก็บชั้นใน ไม่ใช่ที่ประตู' },
+  { name: 'โยเกิร์ต', icon: F(3), unit: 'ถ้วย', qty: 2, step: 1, days: 10, frz: 30, cat: 'นมไข่', tip: 'ดูวันหมดอายุบนฉลากเป็นหลัก' },
+  { name: 'โยเกิร์ตสตรอว์เบอร์รี่', icon: F(4), unit: 'ถ้วย', qty: 2, step: 1, days: 10, frz: 30, cat: 'นมไข่', tip: 'ดูวันหมดอายุบนฉลากเป็นหลัก' },
+  { name: 'ไอศกรีม', icon: F(5), unit: 'ถัง', qty: 1, step: 1, days: 60, frz: 60, cat: 'ของหวาน', tip: 'เก็บช่องแช่แข็งด้านใน อุณหภูมิคงที่กว่าประตู' },
+  { name: 'ชีส', icon: F(6), unit: 'ก้อน', qty: 1, step: 1, days: 30, frz: 90, cat: 'นมไข่', tip: 'ห่อกระดาษไขแล้วใส่ถุง ชีสจะไม่แห้ง' },
+  { name: 'เนย', icon: F(7), unit: 'ก้อน', qty: 1, step: 1, days: 30, frz: 180, cat: 'นมไข่', tip: 'ห่อให้มิด เนยดูดกลิ่นง่าย' },
+  { name: 'ไข่', icon: F(8), unit: 'ฟอง', qty: 6, step: 1, days: 21, frz: 21, cat: 'นมไข่', tip: 'เก็บในแผงชั้นกลาง ไม่ต้องล้างก่อนเก็บ' },
+  { name: 'วิปครีม', icon: B(57), unit: 'กระป๋อง', qty: 1, step: 1, days: 7, frz: 30, cat: 'นมไข่', tip: 'เขย่าก่อนใช้ เก็บชั้นใน' },
+  { name: 'แซลมอน', icon: F(9), unit: 'ชิ้น', qty: 1, step: 1, days: 2, frz: 90, cat: 'เนื้อสัตว์', tip: 'ห่อให้มิด แช่ช่องล่างสุดหรือแช่แข็ง' },
+  { name: 'หมูสับ', icon: F(10), unit: 'ก.', qty: 300, step: 100, days: 3, frz: 120, cat: 'เนื้อสัตว์', tip: 'แบ่งเป็นมื้อแล้วแช่แข็ง เก็บชั้นล่างสุด' },
+  { name: 'ไก่', icon: F(11), unit: 'ชิ้น', qty: 2, step: 1, days: 3, frz: 120, cat: 'เนื้อสัตว์', tip: 'เก็บชั้นล่างสุด กันน้ำหยดใส่ของอื่น' },
+  { name: 'ปลา', icon: F(12), unit: 'ตัว', qty: 1, step: 1, days: 2, frz: 90, cat: 'เนื้อสัตว์', tip: 'ล้างซับให้แห้ง แช่ช่องล่างสุด' },
+  { name: 'แครอท', icon: F(13), unit: 'หัว', qty: 2, step: 1, days: 10, frz: 60, cat: 'ผัก', tip: 'แยกจากผลไม้สุก ผักจะอยู่ได้นานขึ้น' },
+  { name: 'บร็อคโคลี', icon: F(14), unit: 'หัว', qty: 1, step: 1, days: 5, frz: 60, cat: 'ผัก', tip: 'ห่อกระดาษหมาดๆ ใส่ช่องผัก' },
+  { name: 'กะหล่ำปลี', icon: F(15), unit: 'หัว', qty: 1, step: 1, days: 14, frz: 60, cat: 'ผัก', tip: 'เก็บทั้งหัว ลอกใบนอกเมื่อจะใช้' },
+  { name: 'มะเขือเทศ', icon: F(16), unit: 'ลูก', qty: 4, step: 1, days: 10, frz: 60, cat: 'ผัก', tip: 'เก็บแยกจากผักใบ' },
+  { name: 'แตงกวา', icon: F(17), unit: 'ลูก', qty: 3, step: 1, days: 7, frz: 30, cat: 'ผัก', tip: 'ห่อกระดาษ เก็บช่องผัก อย่าให้เย็นจัด' },
+  { name: 'มะเขือม่วง', icon: F(18), unit: 'ลูก', qty: 2, step: 1, days: 7, frz: 30, cat: 'ผัก', tip: 'ใช้ภายในหนึ่งสัปดาห์ เก็บในถุงเจาะรู' },
+  { name: 'ฟักทอง', icon: F(19), unit: 'ลูก', qty: 1, step: 1, days: 30, frz: 90, cat: 'ผัก', tip: 'ทั้งลูกเก็บนอกตู้ได้ หั่นแล้วห่อแช่ตู้เย็น' },
+  { name: 'มันฝรั่ง', icon: F(20), unit: 'หัว', qty: 4, step: 1, days: 21, frz: 60, cat: 'ผัก', tip: 'เก็บที่มืดและแห้ง แยกจากหอมใหญ่' },
+  { name: 'หอมใหญ่', icon: F(21), unit: 'หัว', qty: 3, step: 1, days: 30, frz: 90, cat: 'ผัก', tip: 'หั่นแล้วใส่กล่องปิด ใช้ภายใน 7 วัน' },
+  { name: 'เห็ด', icon: F(22), unit: 'แพ็ค', qty: 1, step: 1, days: 5, frz: 60, cat: 'ผัก', tip: 'ใส่ถุงกระดาษ อย่าล้างก่อนเก็บ' },
+  { name: 'พริกหวาน', icon: F(23), unit: 'ลูก', qty: 2, step: 1, days: 10, frz: 60, cat: 'ผัก', tip: 'เก็บทั้งลูกในช่องผัก' },
+  { name: 'ข้าวโพด', icon: F(24), unit: 'ฝัก', qty: 2, step: 1, days: 5, frz: 90, cat: 'ผัก', tip: 'เก็บพร้อมเปลือก ความหวานจะอยู่นานกว่า' },
+  { name: 'แอปเปิ้ล', icon: F(25), unit: 'ลูก', qty: 4, step: 1, days: 30, frz: 90, cat: 'ผลไม้', tip: 'แยกจากผักเพราะทำให้ผักสุกเร็ว' },
+  { name: 'ส้ม', icon: F(26), unit: 'ลูก', qty: 6, step: 1, days: 14, frz: 90, cat: 'ผลไม้', tip: 'เก็บในช่องผักหรือถุงตาข่าย' },
+  { name: 'สตรอว์เบอร์รี่', icon: F(27), unit: 'กล่อง', qty: 1, step: 1, days: 4, frz: 90, cat: 'ผลไม้', tip: 'อย่าล้างก่อนเก็บ ล้างตอนจะกิน' },
+  { name: 'กล้วย', icon: F(28), unit: 'หวี', qty: 1, step: 1, days: 5, frz: 90, cat: 'ผลไม้', tip: 'สุกแล้วเข้าตู้ได้ เปลือกดำแต่เนื้อยังดี' },
+  { name: 'องุ่น', icon: F(29), unit: 'พวง', qty: 1, step: 1, days: 7, frz: 90, cat: 'ผลไม้', tip: 'เก็บทั้งพวง ล้างตอนจะกิน' },
+  { name: 'อะโวคาโด', icon: F(30), unit: 'ลูก', qty: 2, step: 1, days: 4, frz: 90, cat: 'ผลไม้', tip: 'สุกแล้วเข้าตู้ หั่นแล้วบีบมะนาวกันดำ' },
+  { name: 'ขนมปัง', icon: B(31), unit: 'แถว', qty: 1, step: 1, days: 5, frz: 60, cat: 'เบเกอรี่', tip: 'แช่แข็งเป็นแผ่น ปิ้งได้ทันที' },
+  { name: 'ขนมปังบริยอช', icon: B(32), unit: 'ก้อน', qty: 1, step: 1, days: 5, frz: 60, cat: 'เบเกอรี่', tip: 'ห่อให้มิด แช่แข็งได้นาน' },
+  { name: 'ครัวซองต์', icon: B(33), unit: 'ชิ้น', qty: 2, step: 1, days: 3, frz: 60, cat: 'เบเกอรี่', tip: 'อุ่นในเตาอบ 3–4 นาทีจะกรอบเหมือนใหม่' },
+  { name: 'ครัวซองต์ช็อกโกแลต', icon: B(34), unit: 'ชิ้น', qty: 2, step: 1, days: 3, frz: 60, cat: 'เบเกอรี่', tip: 'อุ่นในเตาอบก่อนกิน' },
+  { name: 'ซินนามอนโรล', icon: B(35), unit: 'ชิ้น', qty: 2, step: 1, days: 3, frz: 60, cat: 'เบเกอรี่', tip: 'ใส่กล่องปิด อุ่นไมโครเวฟ 15 วินาที' },
+  { name: 'บาแก็ต', icon: B(36), unit: 'แท่ง', qty: 1, step: 1, days: 3, frz: 60, cat: 'เบเกอรี่', tip: 'หั่นแช่แข็ง พรมน้ำแล้วอบให้กรอบ' },
+  { name: 'แพนเค้ก', icon: B(51), unit: 'ชิ้น', qty: 4, step: 1, days: 3, frz: 60, cat: 'เบเกอรี่', tip: 'คั่นกระดาษไขแล้วแช่แข็ง' },
+  { name: 'วาฟเฟิล', icon: B(52), unit: 'ชิ้น', qty: 2, step: 1, days: 3, frz: 60, cat: 'เบเกอรี่', tip: 'แช่แข็งแล้วเข้าเครื่องปิ้งได้เลย' },
+  { name: 'แซนด์วิช', icon: B(58), unit: 'ชิ้น', qty: 1, step: 1, days: 1, frz: 30, cat: 'เบเกอรี่', tip: 'กินภายในวันเดียว เพราะผักจะทำให้ขนมปังแฉะ' },
+  { name: 'ชีสโทสต์', icon: B(59), unit: 'ชิ้น', qty: 1, step: 1, days: 2, frz: 30, cat: 'เบเกอรี่', tip: 'อุ่นในเตาอบให้ชีสละลายอีกครั้ง' },
+  { name: 'ซาลาเปา', icon: B(60), unit: 'ลูก', qty: 4, step: 1, days: 3, frz: 60, cat: 'เบเกอรี่', tip: 'แช่แข็งได้ นึ่ง 10 นาทีโดยไม่ต้องละลาย' },
+  { name: 'เค้ก', icon: B(37), unit: 'ชิ้น', qty: 1, step: 1, days: 3, frz: 30, cat: 'ของหวาน', tip: 'ใส่กล่องปิดสนิท กันกลิ่นในตู้' },
+  { name: 'เค้กช็อกโกแลต', icon: B(38), unit: 'ชิ้น', qty: 1, step: 1, days: 4, frz: 60, cat: 'ของหวาน', tip: 'ใส่กล่องปิดสนิท กันกลิ่นในตู้' },
+  { name: 'ชีสเค้ก', icon: B(39), unit: 'ชิ้น', qty: 1, step: 1, days: 5, frz: 60, cat: 'ของหวาน', tip: 'เก็บในตู้เย็นเสมอ แช่แข็งได้' },
+  { name: 'คัพเค้ก', icon: B(40), unit: 'ชิ้น', qty: 2, step: 1, days: 3, frz: 30, cat: 'ของหวาน', tip: 'ใส่กล่องสูง อย่าให้ครีมโดนฝา' },
+  { name: 'เค้กวันเกิด', icon: B(41), unit: 'ชิ้น', qty: 1, step: 1, days: 3, frz: 30, cat: 'ของหวาน', tip: 'ห่อหน้าตัดด้วยพลาสติกแรป เนื้อเค้กจะไม่แห้ง' },
+  { name: 'บราวนี่', icon: B(42), unit: 'ชิ้น', qty: 2, step: 1, days: 5, frz: 90, cat: 'ของหวาน', tip: 'ห่อแยกชิ้น แช่แข็งได้นาน' },
+  { name: 'โดนัท', icon: B(49), unit: 'ชิ้น', qty: 2, step: 1, days: 2, frz: 30, cat: 'ของหวาน', tip: 'กินให้หมดใน 1–2 วัน' },
+  { name: 'คุกกี้', icon: B(50), unit: 'ชิ้น', qty: 6, step: 1, days: 14, frz: 90, cat: 'ของหวาน', tip: 'ใส่โหลปิดสนิท จะกรอบนาน' },
+  { name: 'มาการง', icon: B(53), unit: 'ชิ้น', qty: 4, step: 1, days: 7, frz: 60, cat: 'ของหวาน', tip: 'เก็บในกล่องปิด พักนอกตู้ 15 นาทีก่อนกิน' },
+  { name: 'ชูครีม', icon: B(54), unit: 'ชิ้น', qty: 4, step: 1, days: 2, frz: 30, cat: 'ของหวาน', tip: 'ไส้ครีมเสียง่าย ต้องแช่เย็นเสมอ' },
+  { name: 'เอแคลร์', icon: B(55), unit: 'ชิ้น', qty: 2, step: 1, days: 2, frz: 30, cat: 'ของหวาน', tip: 'ไส้ครีมเสียง่าย ต้องแช่เย็นเสมอ' },
+  { name: 'คัสตาร์ดพุดดิ้ง', icon: B(56), unit: 'ถ้วย', qty: 2, step: 1, days: 4, frz: 30, cat: 'ของหวาน', tip: 'ปิดฝาไว้ กันกลิ่นในตู้' },
+  { name: 'แยมสตรอว์เบอร์รี่', icon: B(43), unit: 'ขวด', qty: 1, step: 1, days: 30, frz: 180, cat: 'ทาขนมปัง', tip: 'ใช้ช้อนสะอาดตัก เปิดแล้วแช่ตู้เย็น' },
+  { name: 'แยมส้ม', icon: B(44), unit: 'ขวด', qty: 1, step: 1, days: 30, frz: 180, cat: 'ทาขนมปัง', tip: 'ใช้ช้อนสะอาดตัก เปิดแล้วแช่ตู้เย็น' },
+  { name: 'แยมบลูเบอร์รี่', icon: B(45), unit: 'ขวด', qty: 1, step: 1, days: 30, frz: 180, cat: 'ทาขนมปัง', tip: 'ใช้ช้อนสะอาดตัก เปิดแล้วแช่ตู้เย็น' },
+  { name: 'น้ำผึ้ง', icon: B(46), unit: 'ขวด', qty: 1, step: 1, days: 180, frz: 365, cat: 'ทาขนมปัง', tip: 'ไม่ต้องแช่เย็น ถ้าตกผลึกให้แช่น้ำอุ่น' },
+  { name: 'เนยถั่ว', icon: B(47), unit: 'ขวด', qty: 1, step: 1, days: 90, frz: 180, cat: 'ทาขนมปัง', tip: 'เปิดแล้วแช่ตู้เย็นช่วยกันน้ำมันเหม็นหืน' },
+  { name: 'ช็อกโกแลตสเปรด', icon: B(48), unit: 'ขวด', qty: 1, step: 1, days: 90, frz: 180, cat: 'ทาขนมปัง', tip: 'เก็บที่เย็นและแห้ง ปิดฝาให้สนิท' }
 ];
+const PRESET_CATS = ['ทั้งหมด', 'เนื้อสัตว์', 'นมไข่', 'ผัก', 'ผลไม้', 'เบเกอรี่', 'ของหวาน', 'ทาขนมปัง'];
 
 const RECIPES = [
   { name: 'ไข่เจียวหมูสับ', time: 10, hero: F(8), bg: '#fff0d9', uses: ['ไข่ไก่', 'หมูสับ', 'มะเขือเทศ'], how: 'ตีไข่กับหมูสับและมะเขือเทศหั่น ปรุงน้ำปลานิดหน่อย ทอดในน้ำมันร้อนจัดจนฟูกรอบ' },
@@ -487,7 +542,7 @@ class Component extends DCLogic {
     const firstUrgent = items.find(i => i.d >= 0);
     const navName = s.navPick || this.props.navColor || 'ส้มสดใส', navc = NAVS[navName] || NAVS['ขาวนวล'];
     const ink = navc.ink, dim = navc.dim;
-    const nav = (key, label, icon) => ({ label, icon, ink: s.screen === key ? ink : dim, go: () => this.go(key), iconStyle: { display: 'block', transition: 'transform .3s cubic-bezier(.2,.9,.3,1.6)', transform: s.screen === key ? 'translateY(-3px) scale(1.15) rotate(-6deg)' : 'scale(.92)', filter: s.screen === key ? 'none' : (navc.gray ? 'grayscale(.6)' : 'saturate(.75)') } });
+    const nav = (key, label, icon) => ({ label, icon, ink: s.screen === key ? ink : dim, tapKey: key + '-' + (s.navTapKey === key ? s.navTapN : 0), go: () => { this.setState(st => ({ navTapKey: key, navTapN: (st.navTapN || 0) + 1 })); this.go(key); }, iconStyle: { display: 'block', animation: s.navTapKey === key && s.navTapN ? 'navBounce .6s cubic-bezier(.3,1.4,.5,1) both' : 'none' } });
     const fList = items.filter(i => s.filter === 'all' || (s.filter === 'soon' && i.d >= 0 && i.d <= 3) || (s.filter === 'expired' && i.d < 0) || (s.filter === 'freezer' && i.loc === 'freezer'));
     const names = new Map(items.filter(i => i.d >= 0).map(i => [i.name, i]));
     const recipes = RECIPES.map((r, idx) => {
@@ -573,7 +628,8 @@ class Component extends DCLogic {
       pickKey: s.pickKey,
       draft: d || { icon: '', name: '', qty: 0, unit: '', days: 0, tip: '' },
       draftExp: d ? thDate(d.days) : '',
-      presets: PRESETS.map(p => {
+      presetCats: PRESET_CATS.map(c => { const on = (s.presetCat || 'ทั้งหมด') === c; return { name: c, bg: on ? '#ff8a1f' : '#fff', ink: on ? '#fff' : '#18345e', edge: on ? '#d96d0c' : '#efe6d6', pick: () => this.setState({ presetCat: c }) }; }),
+      presets: PRESETS.filter(p => !s.presetCat || s.presetCat === 'ทั้งหมด' || p.cat === s.presetCat).map(p => {
         const on = d && d.icon === p.icon;
         return { ...p, bg: on ? '#ffe3bd' : '#fff', border: on ? '#ff8a1f' : '#fff', edge: on ? '#f2cf9d' : '#efe6d6', pick: () => this.setState(st => ({ draft: { ...p, loc: st.draft.loc, days: st.draft.loc === 'freezer' ? p.frz : p.days }, pickKey: st.pickKey + 1 })) };
       }),
