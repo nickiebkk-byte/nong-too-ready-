@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>น้องตู้รู้ทัน</title>
+<meta name="theme-color" content="#f6f2ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="น้องตู้รู้ทัน">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0;background:#f6efe2;font-family:'Prompt',sans-serif;color:#18345e;-webkit-font-smoothing:antialiased}
+a{color:#1764c0}a:hover{color:#f58220}
+button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input{font-family:inherit}
+*::-webkit-scrollbar{width:0;height:0}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.03,.97)}}
+@keyframes jumpA{0%{transform:translateY(0) scale(1)}25%{transform:translateY(4px) scale(1.08,.9)}55%{transform:translateY(-34px) scale(.95,1.06) rotate(-6deg)}80%{transform:translateY(0) scale(1.05,.95)}100%{transform:translateY(0) scale(1)}}
+@keyframes jumpB{0%{transform:translateY(0) scale(1)}25%{transform:translateY(4px) scale(1.08,.9)}55%{transform:translateY(-34px) scale(.95,1.06) rotate(6deg)}80%{transform:translateY(0) scale(1.05,.95)}100%{transform:translateY(0) scale(1)}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-7px) rotate(calc(var(--r,0deg) * -1))}}
+@keyframes popIn{0%{opacity:0;transform:scale(.6) rotate(-6deg)}70%{opacity:1;transform:scale(1.06) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes screenIn{0%{opacity:0;transform:translateY(18px) scale(.98)}100%{opacity:1;transform:none}}
+@keyframes bubbleIn{0%{opacity:0;transform:scale(.4) translate(20px,20px)}70%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes sheetUp{0%{transform:translateY(100%)}100%{transform:translateY(0)}}
+@keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
+@keyframes toastIn{0%{opacity:0;transform:translate(-50%,-30px) scale(.8)}60%{transform:translate(-50%,4px) scale(1.04)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes fall{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),620px) rotate(var(--rot));opacity:0}}
+@keyframes leaveUsed{0%{transform:none;opacity:1}30%{transform:scale(1.05)}100%{transform:translateX(120%) rotate(8deg);opacity:0}}
+@keyframes leaveWaste{0%,100%{opacity:1}10%,30%,50%{transform:translateX(-8px) rotate(-2deg)}20%,40%{transform:translateX(8px) rotate(2deg)}100%{transform:translateY(40px) scale(.7);opacity:0}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg) scale(1.08)}75%{transform:rotate(8deg) scale(1.08)}}
+@keyframes ring{0%,100%{transform:rotate(0)}10%,30%{transform:rotate(-12deg)}20%,40%{transform:rotate(12deg)}50%{transform:rotate(0)}}
+@keyframes shine{0%{transform:translateX(-120%) skewX(-20deg)}60%,100%{transform:translateX(320%) skewX(-20deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:{{ outerPad }};box-sizing:border-box;background:#f6efe2;background-image:radial-gradient(circle at 12% 18%,#ffe1b8 0,transparent 32%),radial-gradient(circle at 88% 82%,#d7ecff 0,transparent 30%)">
+<sc-if value="{{ framed }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+  <span style="font-size:14px;font-weight:700;color:#12357a">เลือกสีพื้นหลัง</span>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+    <sc-for list="{{ bgOptions }}" as="o" hint-placeholder-count="5">
+    <button onClick="{{ o.pick }}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 8px 8px;width:86px;border-radius:22px;border:3px solid {{ o.border }};background:#fff;box-shadow:0 4px 0 {{ o.edge }};font-size:12px;font-weight:600;color:#18345e" style-active="transform:translateY(3px)">
+      <span style="width:62px;height:62px;border-radius:18px;background:{{ o.base }};background-image:radial-gradient(circle at 0% 0%,{{ o.glow }} 0,transparent 70%);border:2px solid #f0e8da;display:flex;align-items:flex-end;justify-content:center;overflow:hidden"><img src="assets/mascot.png" alt="" style="width:34px;margin-bottom:-4px"></span>
+      {{ o.name }}
+    </button>
+    </sc-for>
+  </div>
+  <span style="font-size:14px;font-weight:700;color:#12357a;margin-top:6px">เลือกสีแถบเมนู</span>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+    <sc-for list="{{ navOptions }}" as="o" hint-placeholder-count="5">
+    <button onClick="{{ o.pick }}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;width:86px;border-radius:22px;border:3px solid {{ o.border }};background:#fff;box-shadow:0 4px 0 {{ o.edgeSel }};font-size:12px;font-weight:600;color:#18345e" style-active="transform:translateY(3px)">
+      <span style="width:66px;height:34px;border-radius:12px;background:{{ o.bg }};box-shadow:0 3px 0 {{ o.edge }};display:flex;align-items:center;justify-content:space-around;padding:0 6px;box-sizing:border-box">
+        <span style="width:9px;height:9px;border-radius:50%;background:{{ o.ink }}"></span>
+        <span style="width:16px;height:16px;border-radius:6px;background:{{ o.plus }};border:2px solid #fff;margin-top:-12px"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:{{ o.dim }}"></span>
+      </span>
+      {{ o.name }}
+    </button>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+<div style="{{ frameStyle }}">
+<div data-screen-label="App" style="position:relative;width:100%;height:100%;border-radius:{{ screenRadius }};overflow:hidden;background:{{ bgc.base }}">
+
+  <sc-if value="{{ framed }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px;box-sizing:border-box;font-weight:600;font-size:15px;color:#18345e;pointer-events:none">
+    <span>9:41</span>
+    <div style="position:absolute;left:50%;top:10px;transform:translateX(-50%);width:118px;height:33px;border-radius:20px;background:#0b1428"></div>
+    <span style="display:flex;gap:6px;align-items:center"><svg width="18" height="11" viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="#18345e"></rect><rect x="5" y="5" width="3" height="6" rx="1" fill="#18345e"></rect><rect x="10" y="2.5" width="3" height="8.5" rx="1" fill="#18345e"></rect><rect x="15" y="0" width="3" height="11" rx="1" fill="#18345e"></rect></svg><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="#18345e" opacity=".5"></rect><rect x="2" y="2" width="17" height="8" rx="2" fill="#18345e"></rect><rect x="23.5" y="4" width="1.8" height="4" rx="1" fill="#18345e" opacity=".5"></rect></svg></span>
+  </div>
+  </sc-if>
+
+  <div ref="{{ scrollRef }}" style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:50px 0 120px;box-sizing:border-box;background:{{ bgc.base }};background-image:radial-gradient(circle at 0% 0%,{{ bgc.glow }} 0,transparent 38%);transition:background-color .4s">
+
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="01 หน้าหลัก" style="animation:screenIn .45s cubic-bezier(.2,.9,.3,1.2) both;display:flex;flex-direction:column;gap:18px;padding:6px 18px 0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <img src="assets/logo-full.png" alt="น้องตู้รู้ทัน พร้อมน้องตู้เย็น" style="flex:1;min-width:0;max-width:280px;height:auto;display:block;filter:drop-shadow(0 4px 6px rgba(18,53,122,.15))">
+        <button onClick="{{ ringBell }}" style="position:relative;width:46px;height:46px;border-radius:16px;border:3px solid #fff;background:#ffe9cc;box-shadow:0 4px 0 #f3d3a6;display:flex;align-items:center;justify-content:center;padding:0">
+          <svg width="22" height="22" viewBox="0 0 24 24" style="{{ bellStyle }}"><path d="M12 3a6 6 0 0 0-6 6v3.5L4.5 16h15L18 12.5V9a6 6 0 0 0-6-6Z" fill="#f58220"></path><circle cx="12" cy="19" r="2.4" fill="#f58220"></circle></svg>
+          <span style="position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:#e8463a;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff">{{ urgentCount }}</span>
+        </button>
+      </div>
+
+      <div style="position:relative;height:318px;border-radius:38px 38px 44px 30px;background:#ffe3bd;border:4px solid #fff;box-shadow:0 8px 0 #f2cf9d,0 18px 30px -12px rgba(245,130,32,.35);overflow:hidden">
+        <div style="position:absolute;right:-50px;top:-50px;width:220px;height:220px;border-radius:50%;background:#ffd49a"></div>
+        <div style="position:absolute;left:-30px;bottom:-60px;width:180px;height:180px;border-radius:50%;background:#e2f2e9"></div>
+        <div style="position:absolute;left:18px;top:18px;z-index:3;max-width:180px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.12em;color:#c0661a">{{ todayLabel }}</div>
+          <div style="font-size:27px;line-height:1.22;font-weight:800;color:#12357a;margin-top:2px;text-wrap:balance">วันนี้มีอะไร ในตู้เย็นบ้าง?</div>
+        </div>
+        <div key="{{ bubbleKey }}" onClick="{{ tapMascot }}" style="position:absolute;left:16px;top:112px;z-index:4;max-width:150px;background:#fff;border-radius:22px 22px 22px 6px;padding:10px 13px;font-size:13.5px;line-height:1.4;font-weight:500;color:#18345e;box-shadow:0 6px 0 #f2cf9d;animation:bubbleIn .5s cubic-bezier(.2,.9,.3,1.4) both;transform-origin:100% 100%;cursor:pointer">{{ bubbleText }}</div>
+        <button onClick="{{ tapMascot }}" aria-label="แตะน้องตู้" style="position:absolute;right:4px;top:44px;z-index:2;border:0;background:transparent;padding:0;width:{{ mascotW }}px">
+          <div style="{{ mascotJump }}">
+            <img src="assets/mascot.png" alt="น้องตู้เย็น" style="width:100%;display:block;animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 10px 10px rgba(18,53,122,.25))">
+          </div>
+        </button>
+        <sc-if value="{{ showFriends }}" hint-placeholder-val="{{ true }}">
+        <img onClick="{{ pokeCarrot }}" src="assets/food/13.png" alt="" style="position:absolute;left:24px;bottom:16px;width:74px;z-index:3;--r:-6deg;animation:floaty 2.6s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));cursor:pointer">
+        <img onClick="{{ pokeMilk }}" src="assets/food/01.png" alt="" style="position:absolute;left:100px;bottom:10px;width:64px;z-index:3;--r:5deg;animation:floaty 3s ease-in-out .4s infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));cursor:pointer">
+        <img onClick="{{ pokeEgg }}" src="assets/food/08.png" alt="" style="position:absolute;left:168px;bottom:6px;width:58px;z-index:3;--r:-4deg;animation:floaty 2.8s ease-in-out .8s infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));cursor:pointer">
+        <img onClick="{{ pokeCabbage }}" src="assets/food/15.png" alt="" style="position:absolute;right:16px;bottom:4px;width:78px;z-index:3;--r:4deg;animation:floaty 3.3s ease-in-out .2s infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));cursor:pointer">
+        </sc-if>
+      </div>
+
+      <button onClick="{{ openAdd }}" style="position:relative;overflow:hidden;height:62px;border:4px solid #fff;border-radius:24px;background:#ff8a1f;color:#fff;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 0 #d9640a,0 14px 24px -10px rgba(217,100,10,.6);margin-top:-4px" style-active="transform:translateY(4px);box-shadow:0 2px 0 #d9640a">
+        <span style="width:30px;height:30px;border-radius:50%;background:#fff;color:#ff8a1f;display:flex;align-items:center;justify-content:center;font-size:24px;line-height:1;font-weight:800">+</span>
+        เพิ่มวัตถุดิบ
+        <span style="position:absolute;top:0;bottom:0;left:0;width:60px;background:rgba(255,255,255,.35);animation:shine 3.5s ease-in-out infinite"></span>
+      </button>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <sc-for list="{{ counters }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.go }}" style="position:relative;height:104px;border:4px solid #fff;border-radius:{{ c.radius }};background:{{ c.bg }};box-shadow:0 6px 0 {{ c.edge }};padding:12px 12px 10px 14px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;overflow:visible;animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) both;animation-delay:{{ c.delay }}" style-active="transform:translateY(4px) scale(.98)">
+          <span style="font-size:12.5px;font-weight:600;color:{{ c.ink }};max-width:90px;line-height:1.3">{{ c.label }}</span>
+          <span style="display:flex;align-items:baseline;gap:4px"><b style="font-size:38px;line-height:1;font-weight:800;color:{{ c.ink }}">{{ c.n }}</b><span style="font-size:12px;color:{{ c.ink }}">รายการ</span></span>
+          <img src="{{ c.icon }}" alt="" style="position:absolute;right:-6px;top:-14px;width:64px;transform:rotate(8deg);filter:drop-shadow(0 4px 4px rgba(0,0,0,.12))">
+        </button>
+        </sc-for>
+      </div>
+
+      <div style="position:relative;margin-top:14px;background:{{ uc.bg }};border:4px solid #fff;border-radius:34px;padding:18px 12px 12px;box-shadow:0 7px 0 {{ uc.edge }},0 18px 28px -12px {{ uc.glow }};display:flex;flex-direction:column;gap:10px">
+        <div style="position:absolute;right:-8px;top:-34px;width:92px;height:92px;border-radius:28px;border:4px solid #fff;overflow:hidden;transform:rotate(8deg);box-shadow:0 6px 12px rgba(0,0,0,.18);animation:ring 2.4s ease-in-out infinite"><img src="assets/poses/15.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:0 6px;max-width:220px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="position:relative;width:12px;height:12px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;background:{{ uc.ink }};animation:breathe 1.2s ease-in-out infinite"></span></span>
+            <span style="font-size:24px;font-weight:800;color:{{ uc.ink }};line-height:1.1">ควรใช้ก่อน!</span>
+          </div>
+          <span style="font-size:13px;font-weight:500;color:{{ uc.ink }}">มี {{ urgentCount }} อย่างที่ใกล้หมดหรือเลยกำหนดแล้ว</span>
+        </div>
+        <sc-for list="{{ urgentList }}" as="it" hint-placeholder-count="3">
+        <button onClick="{{ goFridge }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px 10px 10px;border:0;border-radius:24px;background:#fff;box-shadow:0 4px 0 {{ uc.rowEdge }};text-align:left;width:100%" style-active="transform:translateY(3px)">
+          <div style="width:62px;height:56px;flex:none;border-radius:20px;background:{{ it.tile }};display:flex;align-items:center;justify-content:center"><img src="{{ it.icon }}" alt="" style="max-width:56px;max-height:52px;filter:drop-shadow(0 3px 3px rgba(0,0,0,.12))"></div>
+          <div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:700;color:#18345e">{{ it.name }}</div><div style="font-size:12.5px;color:#68758a">{{ it.qty }}</div></div>
+          <span style="font-size:14px;font-weight:800;padding:8px 12px;border-radius:16px;background:{{ it.pillInk }};color:#fff;white-space:nowrap">{{ it.left }}</span>
+        </button>
+        </sc-for>
+        <button onClick="{{ goFridge }}" style="height:44px;border:3px solid #fff;border-radius:18px;background:{{ uc.btn }};color:{{ uc.btnInk }};font-size:15px;font-weight:700" style-active="transform:translateY(2px)">ดูของที่ใกล้หมดทั้งหมด ›</button>
+      </div>
+
+      <sc-if value="{{ hasFeatured }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ goRecipes }}" style="position:relative;border:4px solid #fff;border-radius:30px;background:#e2f2e9;box-shadow:0 6px 0 #c4e3cf;padding:16px;display:flex;gap:12px;align-items:center;text-align:left;overflow:visible" style-active="transform:translateY(4px)">
+        <img src="assets/poses/13.png" alt="" style="width:84px;height:84px;border-radius:26px;object-fit:cover;border:3px solid #fff;flex:none;transform:rotate(-5deg)">
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:11.5px;font-weight:600;color:#2e7d4f;letter-spacing:.04em">เมนูแนะนำจากของในตู้</span>
+          <span style="font-size:18px;font-weight:700;color:#12357a;line-height:1.25">{{ featured.name }}</span>
+          <span style="display:flex;gap:2px;align-items:center"><sc-for list="{{ featured.icons }}" as="ic" hint-placeholder-count="2"><img src="{{ ic }}" alt="" style="height:30px"></sc-for><span style="font-size:12px;color:#4d6b5a;margin-left:6px">{{ featured.time }} นาที</span></span>
+        </div>
+        <span style="width:38px;height:38px;border-radius:50%;background:#2e9b5f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none">›</span>
+      </button>
+      </sc-if>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isFridge }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="02 ในตู้เย็น" style="animation:screenIn .45s cubic-bezier(.2,.9,.3,1.2) both;display:flex;flex-direction:column;gap:14px;padding:10px 18px 0">
+      <div style="position:relative;height:150px;border-radius:34px;background:#d9ecff;border:4px solid #fff;box-shadow:0 6px 0 #b9d6f2;overflow:hidden;padding:18px;box-sizing:border-box">
+        <div style="font-size:26px;font-weight:800;color:#12357a;line-height:1.2">ในตู้เย็นของฉัน</div>
+        <div style="font-size:13px;color:#3f5d86;margin-top:4px;max-width:180px">มีของอยู่ {{ totalCount }} อย่าง ใช้ให้ทันนะ</div>
+        <img src="assets/poses/16.png" alt="" style="position:absolute;right:14px;top:14px;width:112px;height:112px;border-radius:32px;object-fit:cover;border:4px solid #fff;transform:rotate(6deg);animation:breathe 3s ease-in-out infinite">
+      </div>
+      <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px;margin:0 -2px">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+        <button onClick="{{ f.pick }}" style="flex:none;display:flex;align-items:center;gap:6px;height:42px;padding:0 14px 0 8px;border-radius:999px;border:3px solid #fff;background:{{ f.bg }};color:{{ f.ink }};font-size:14px;font-weight:600;box-shadow:0 4px 0 {{ f.edge }}" style-active="transform:translateY(3px)">
+          <img src="{{ f.icon }}" alt="" style="height:26px">{{ f.label }}<span style="font-size:11.5px;min-width:20px;height:20px;border-radius:10px;background:rgba(255,255,255,.7);color:#18345e;display:flex;align-items:center;justify-content:center;padding:0 5px;box-sizing:border-box">{{ f.n }}</span>
+        </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ listEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border-radius:30px;padding:26px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 6px 0 #efe6d6">
+          <img src="assets/poses/09.png" alt="" style="width:110px;height:110px;border-radius:32px;object-fit:cover;animation:bob 3s ease-in-out infinite">
+          <div style="font-size:17px;font-weight:700;color:#12357a">ไม่มีรายการในหมวดนี้</div>
+          <div style="font-size:13px;color:#68758a">น้องตู้ดูแลทุกอย่างเรียบร้อยดี</div>
+        </div>
+      </sc-if>
+      <div style="display:flex;flex-direction:column;gap:14px;animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) .1s both">
+      <sc-for list="{{ fridgeList }}" as="it" hint-placeholder-count="5">
+      <div key="{{ it.id }}" style="{{ it.rowStyle }}">
+        <div style="width:72px;height:66px;flex:none;border-radius:24px;background:{{ it.tileBg }};display:flex;align-items:center;justify-content:center;position:relative">
+          <img onClick="{{ it.poke }}" src="{{ it.icon }}" alt="{{ it.name }}" style="{{ it.iconStyle }}">
+          <sc-if value="{{ it.frozen }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:-6px;width:24px;height:24px;border-radius:50%;background:#fff;color:#2b8fe0;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.1)">❄</span></sc-if>
+        </div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap"><span style="font-size:16.5px;font-weight:700">{{ it.name }}</span><span style="font-size:12.5px;color:#68758a">{{ it.qty }}</span></div>
+          <span style="align-self:flex-start;font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;background:{{ it.pillBg }};color:{{ it.pillInk }}">{{ it.left }}</span>
+          <div style="height:7px;border-radius:4px;background:#f2ece0;overflow:hidden"><i style="display:block;height:100%;border-radius:4px;width:{{ it.bar }}%;background:{{ it.pillInk }}"></i></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;flex:none">
+          <button onClick="{{ it.use }}" aria-label="ใช้หมดแล้ว" style="width:48px;height:44px;border-radius:16px;border:3px solid #fff;background:#dff1e6;color:#2e7d4f;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;box-shadow:0 3px 0 #bfe0cb;padding:0" style-active="transform:translateY(3px)"><span style="font-size:16px">✓</span>ใช้หมด</button>
+          <button onClick="{{ it.waste }}" aria-label="ทิ้ง" style="width:48px;height:32px;border-radius:14px;border:3px solid #fff;background:#ffe3df;color:#c0392b;font-size:11.5px;font-weight:700;box-shadow:0 3px 0 #f5c6bf;padding:0" style-active="transform:translateY(3px)">ทิ้ง</button>
+        </div>
+      </div>
+      </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isRecipes }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="03 เมนูแนะนำ" style="animation:screenIn .45s cubic-bezier(.2,.9,.3,1.2) both;display:flex;flex-direction:column;gap:16px;padding:10px 18px 0">
+      <div style="position:relative;height:150px;border-radius:34px;background:#fff0d9;border:4px solid #fff;box-shadow:0 6px 0 #f2d8ad;overflow:hidden;padding:18px;box-sizing:border-box">
+        <div style="font-size:26px;font-weight:800;color:#12357a;line-height:1.2">วันนี้ทำอะไรกินดี?</div>
+        <div style="font-size:13px;color:#8a5a22;margin-top:4px;max-width:180px">เรียงจากเมนูที่ช่วยใช้ของใกล้หมดได้มากที่สุด</div>
+        <img src="assets/poses/13.png" alt="" style="position:absolute;right:14px;top:14px;width:112px;height:112px;border-radius:32px;object-fit:cover;border:4px solid #fff;transform:rotate(-6deg);animation:bob 3s ease-in-out infinite">
+      </div>
+      <sc-for list="{{ recipes }}" as="r" hint-placeholder-count="3">
+      <div style="background:#fff;border-radius:30px;box-shadow:0 6px 0 #efe6d6;overflow:hidden;animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) both;animation-delay:{{ r.delay }}">
+        <button onClick="{{ r.toggle }}" style="width:100%;border:0;background:transparent;padding:16px;display:flex;align-items:center;gap:12px;text-align:left">
+          <div style="width:66px;height:66px;flex:none;border-radius:22px;background:{{ r.bg }};display:flex;align-items:center;justify-content:center;font-size:30px"><img src="{{ r.hero }}" alt="" style="max-width:56px;max-height:54px;transform:rotate(-6deg)"></div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:17px;font-weight:700;color:#12357a">{{ r.name }}</span>
+            <span style="font-size:12.5px;color:#68758a">◷ {{ r.time }} นาที · ใช้ของในตู้ {{ r.useCount }} อย่าง</span>
+          </div>
+          <span style="width:34px;height:34px;border-radius:50%;background:#fff0d9;color:#f58220;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;transition:transform .3s;transform:rotate({{ r.rot }}deg)">›</span>
+        </button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 14px">
+          <sc-for list="{{ r.uses }}" as="u" hint-placeholder-count="2">
+          <span style="display:flex;align-items:center;gap:4px;padding:3px 10px 3px 4px;border-radius:999px;background:{{ u.pillBg }};color:{{ u.pillInk }};font-size:12px;font-weight:600"><img src="{{ u.icon }}" alt="" style="height:24px">{{ u.name }} · {{ u.left }}</span>
+          </sc-for>
+        </div>
+        <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px;animation:fadeIn .3s both">
+          <div style="background:#fffaf1;border-radius:20px;padding:12px 14px;font-size:14px;line-height:1.6;color:#2c4566">{{ r.how }}</div>
+          <button onClick="{{ r.cook }}" style="height:50px;border:3px solid #fff;border-radius:18px;background:#ff8a1f;color:#fff;font-size:16px;font-weight:700;box-shadow:0 5px 0 #d9640a" style-active="transform:translateY(4px);box-shadow:0 1px 0 #d9640a">ทำเมนูนี้ ใช้ของในตู้เลย</button>
+        </div>
+        </sc-if>
+      </div>
+      </sc-for>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isStats }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="04 สถิติ" style="animation:screenIn .45s cubic-bezier(.2,.9,.3,1.2) both;display:flex;flex-direction:column;gap:16px;padding:10px 18px 0">
+      <div style="font-size:26px;font-weight:800;color:#12357a;line-height:1.2;padding:6px 4px 0">ใช้วัตถุดิบคุ้มแค่ไหน</div>
+      <div style="position:relative;background:#fff;border-radius:34px;box-shadow:0 6px 0 #efe6d6;padding:22px 18px;display:flex;align-items:center;gap:16px">
+        <div style="position:relative;width:150px;height:150px;flex:none;border-radius:50%;background:{{ donutBg }};display:flex;align-items:center;justify-content:center">
+          <div style="width:110px;height:110px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <b style="font-size:36px;font-weight:800;color:#12357a;line-height:1">{{ pct }}%</b><span style="font-size:12px;color:#68758a">ใช้ทัน</span>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:14px;height:14px;border-radius:50%;background:#2e9b5f;flex:none"></span><span style="font-size:13px;color:#68758a">ใช้ทัน</span><b style="font-size:22px;margin-left:auto">{{ used }}</b></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:14px;height:14px;border-radius:50%;background:#e8463a;flex:none"></span><span style="font-size:13px;color:#68758a">ต้องทิ้ง</span><b style="font-size:22px;margin-left:auto">{{ wasted }}</b></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="position:relative;border:4px solid #fff;border-radius:30px 24px 30px 24px;background:#dff1e6;box-shadow:0 6px 0 #bfe0cb;padding:14px;height:96px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between">
+          <span style="font-size:12.5px;font-weight:600;color:#2e7d4f">ใช้ทันสัปดาห์นี้</span><b style="font-size:32px;font-weight:800;color:#2e7d4f;line-height:1">{{ used }}</b>
+          <img src="assets/food/14.png" alt="" style="position:absolute;right:-6px;top:-12px;width:58px;transform:rotate(8deg)">
+        </div>
+        <div style="position:relative;border:4px solid #fff;border-radius:24px 30px 24px 30px;background:#ffe3df;box-shadow:0 6px 0 #f5c6bf;padding:14px;height:96px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between">
+          <span style="font-size:12.5px;font-weight:600;color:#c0392b">ต้องทิ้ง</span><b style="font-size:32px;font-weight:800;color:#c0392b;line-height:1">{{ wasted }}</b>
+          <img src="assets/food/04.png" alt="" style="position:absolute;right:-6px;top:-12px;width:56px;transform:rotate(-8deg)">
+        </div>
+      </div>
+      <div style="position:relative;background:#e2f2e9;border:4px solid #fff;border-radius:30px;box-shadow:0 6px 0 #c4e3cf;padding:16px 120px 16px 16px;min-height:120px;box-sizing:border-box">
+        <div style="font-size:16px;font-weight:700;color:#12357a">{{ statsTitle }}</div>
+        <div style="font-size:13px;color:#3f6a52;margin-top:4px;line-height:1.5">ใช้ของใกล้หมดก่อน ช่วยลดของเหลือทิ้ง วันที่คำนวณเป็นค่าประมาณ ให้ยึดฉลากเป็นหลัก</div>
+        <img src="assets/poses/21.png" alt="" style="position:absolute;right:12px;bottom:12px;width:96px;height:96px;border-radius:28px;object-fit:cover;border:3px solid #fff;transform:rotate(5deg);animation:breathe 3s ease-in-out infinite">
+      </div>
+    </div>
+    </sc-if>
+  </div>
+
+  <div style="position:absolute;left:12px;right:12px;bottom:14px;z-index:30;height:76px;border-radius:30px;background:{{ navc.bg }};box-shadow:0 10px 30px -8px rgba(24,52,94,.25),0 4px 0 {{ navc.edge }};transition:background-color .3s;display:grid;grid-template-columns:1fr 1fr 84px 1fr 1fr;align-items:center">
+    <sc-for list="{{ navLeft }}" as="n" hint-placeholder-count="2">
+      <button onClick="{{ n.go }}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:{{ n.ink }};font-size:11.5px;font-weight:600">
+        <span style="{{ n.iconStyle }}"><img src="{{ n.icon }}" alt="" style="height:36px;max-width:46px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))"></span>{{ n.label }}</button>
+    </sc-for>
+    <div style="display:flex;justify-content:center">
+      <button onClick="{{ openAdd }}" aria-label="เพิ่มวัตถุดิบ" style="width:66px;height:66px;margin-top:-34px;border-radius:24px;border:5px solid #fff;background:{{ navc.plus }};color:#fff;font-size:36px;font-weight:700;line-height:1;box-shadow:0 6px 0 {{ navc.plusEdge }},0 12px 20px -6px rgba(24,52,94,.4);transform:rotate(-6deg);padding:0" style-active="transform:rotate(-6deg) translateY(4px)">+</button>
+    </div>
+    <sc-for list="{{ navRight }}" as="n" hint-placeholder-count="2">
+      <button onClick="{{ n.go }}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:{{ n.ink }};font-size:11.5px;font-weight:600">
+        <span style="{{ n.iconStyle }}"><img src="{{ n.icon }}" alt="" style="height:36px;max-width:46px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))"></span>{{ n.label }}</button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ addOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;inset:0;z-index:50">
+    <div onClick="{{ closeAdd }}" style="position:absolute;inset:0;background:rgba(18,34,63,.45);animation:fadeIn .25s both"></div>
+    <div data-screen-label="05 เพิ่มวัตถุดิบ" style="position:absolute;left:0;right:0;bottom:0;max-height:92%;overflow-y:auto;background:{{ bgc.base }};border-radius:36px 36px 0 0;padding:12px 18px 28px;box-sizing:border-box;animation:sheetUp .4s cubic-bezier(.2,.9,.3,1.1) both;display:flex;flex-direction:column;gap:14px">
+      <div style="width:44px;height:5px;border-radius:3px;background:#e0d6c4;align-self:center"></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div key="{{ pickKey }}" style="width:86px;height:80px;flex:none;border-radius:28px;background:#ffe3bd;border:4px solid #fff;box-shadow:0 5px 0 #f2cf9d;display:flex;align-items:center;justify-content:center;animation:wiggle .5s ease both"><img src="{{ draft.icon }}" alt="" style="max-width:70px;max-height:64px"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:23px;font-weight:800;color:#12357a">เพิ่มวัตถุดิบ</div>
+          <div style="font-size:12.5px;color:#68758a">แตะเลือกเพื่อน แล้วน้องตู้จะช่วยจำวันให้</div>
+        </div>
+        <button onClick="{{ closeAdd }}" aria-label="ปิด" style="width:40px;height:40px;border-radius:14px;border:0;background:#f2ece0;color:#68758a;font-size:18px;flex:none">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <sc-for list="{{ presets }}" as="p" hint-placeholder-count="12">
+        <button onClick="{{ p.pick }}" style="height:78px;border-radius:22px;border:3px solid {{ p.border }};background:{{ p.bg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;font-size:11.5px;font-weight:600;color:#18345e;box-shadow:0 3px 0 {{ p.edge }}" style-active="transform:scale(.94)">
+          <img src="{{ p.icon }}" alt="" style="height:44px;max-width:60px;object-fit:contain">{{ p.name }}</button>
+        </sc-for>
+      </div>
+
+      <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:#68758a">ชื่อวัตถุดิบ</span>
+        <input value="{{ draft.name }}" onChange="{{ setName }}" placeholder="เช่น หมูสับ, คะน้า, นมสด" style="height:50px;border-radius:18px;border:3px solid #fff;background:#fff;box-shadow:0 3px 0 #efe6d6;padding:0 16px;font-size:16px;color:#18345e;outline:none">
+      </label>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:#68758a">จำนวน</span>
+          <div style="height:50px;border-radius:18px;background:#fff;box-shadow:0 3px 0 #efe6d6;display:flex;align-items:center;justify-content:space-between;padding:0 6px">
+            <button onClick="{{ qtyDown }}" style="width:38px;height:38px;border-radius:13px;border:0;background:#fff0d9;color:#f58220;font-size:22px;font-weight:700">−</button>
+            <span style="font-size:16px;font-weight:700">{{ draft.qty }} {{ draft.unit }}</span>
+            <button onClick="{{ qtyUp }}" style="width:38px;height:38px;border-radius:13px;border:0;background:#ff8a1f;color:#fff;font-size:22px;font-weight:700">+</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:#68758a">เก็บได้</span>
+          <div style="height:50px;border-radius:18px;background:#fff;box-shadow:0 3px 0 #efe6d6;display:flex;align-items:center;justify-content:space-between;padding:0 6px">
+            <button onClick="{{ daysDown }}" style="width:38px;height:38px;border-radius:13px;border:0;background:#e1f0f9;color:#1764c0;font-size:22px;font-weight:700">−</button>
+            <span style="font-size:16px;font-weight:700">{{ draft.days }} วัน</span>
+            <button onClick="{{ daysUp }}" style="width:38px;height:38px;border-radius:13px;border:0;background:#1764c0;color:#fff;font-size:22px;font-weight:700">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:#68758a">เก็บที่</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <button onClick="{{ setFridge }}" style="height:52px;border-radius:18px;border:3px solid {{ locFridge.border }};background:{{ locFridge.bg }};color:#12357a;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px"><img src="assets/poses/03.png" alt="" style="width:30px;height:30px;border-radius:9px;object-fit:cover">ช่องธรรมดา</button>
+          <button onClick="{{ setFreezer }}" style="height:52px;border-radius:18px;border:3px solid {{ locFreezer.border }};background:{{ locFreezer.bg }};color:#12357a;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px"><span style="font-size:20px;color:#2b8fe0">❄</span>ช่องแช่แข็ง</button>
+        </div>
+      </div>
+
+      <div style="position:relative;background:#dff1e6;border:4px solid #fff;border-radius:26px;padding:14px 16px;box-shadow:0 5px 0 #bfe0cb">
+        <div style="font-size:12.5px;color:#2e7d4f;font-weight:600">ควรใช้ภายใน</div>
+        <div style="font-size:19px;font-weight:800;color:#12357a">{{ draftExp }}</div>
+        <div style="font-size:12.5px;color:#3f6a52;margin-top:2px">{{ draft.tip }}</div>
+      </div>
+
+      <button onClick="{{ submitAdd }}" style="height:60px;border:4px solid #fff;border-radius:24px;background:#ff8a1f;color:#fff;font-size:18px;font-weight:700;box-shadow:0 6px 0 #d9640a;flex:none" style-active="transform:translateY(4px);box-shadow:0 2px 0 #d9640a">＋ เพิ่มเข้าตู้เย็น</button>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div key="{{ toast.key }}" style="position:absolute;top:58px;left:50%;z-index:70;width:316px;display:flex;align-items:center;gap:10px;background:#12357a;color:#fff;border:4px solid #fff;border-radius:26px;padding:8px 14px 8px 8px;box-shadow:0 12px 24px -8px rgba(18,53,122,.5);animation:toastIn .5s cubic-bezier(.2,.9,.3,1.3) both;box-sizing:border-box">
+    <img src="{{ toast.pose }}" alt="" style="width:48px;height:48px;border-radius:16px;object-fit:cover;flex:none">
+    <div style="font-size:14px;font-weight:600;line-height:1.35">{{ toast.text }}</div>
+  </div>
+  </sc-if>
+
+  <div style="position:absolute;inset:0;z-index:80;pointer-events:none;overflow:hidden">
+    <sc-for list="{{ confetti }}" as="p" hint-placeholder-count="0"><i style="{{ p }}"></i></sc-for>
+  </div>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;appBg&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ครีมวานิลลา&quot;,&quot;ฟ้าพาสเทล&quot;,&quot;ชมพูพีช&quot;,&quot;เขียวมิ้นต์&quot;,&quot;ม่วงลาเวนเดอร์&quot;],&quot;default&quot;:&quot;ม่วงลาเวนเดอร์&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;พื้นหลัง&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ขาวนวล&quot;,&quot;น้ำเงินน้องตู้&quot;,&quot;ส้มสดใส&quot;,&quot;กรมท่า&quot;,&quot;ลาเวนเดอร์&quot;],&quot;default&quot;:&quot;ส้มสดใส&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;แถบเมนู&quot;},&quot;urgentColor&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;บลูเบอร์รี่&quot;,&quot;มะม่วง&quot;,&quot;สตรอว์เบอร์รี่&quot;,&quot;มิ้นต์&quot;,&quot;ส้มแดง&quot;],&quot;default&quot;:&quot;บลูเบอร์รี่&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;ควรใช้ก่อน&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;fridge&quot;,&quot;recipes&quot;,&quot;stats&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;mascotSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:150,&quot;max&quot;:240,&quot;step&quot;:10,&quot;unit&quot;:&quot;px&quot;,&quot;default&quot;:200,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mascot&quot;},&quot;showFriends&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Mascot&quot;}}">
+const F = n => 'assets/food/' + String(n).padStart(2, '0') + '.png';
+const B = n => 'assets/bakery/' + n + '.png';
+const PO = n => 'assets/poses/' + String(n).padStart(2, '0') + '.png';
+let uid = 100;
+const SEED = [
+  ['หมูสับ', '300 ก.', F(10), 1, 'fridge', 3],
+  ['แซลมอน', '200 ก.', F(9), 1, 'fridge', 2],
+  ['นมสด', '1 ลิตร', F(1), 2, 'fridge', 7],
+  ['เห็ด', '1 แพ็ค', F(22), 2, 'fridge', 5],
+  ['โยเกิร์ต', '2 ถ้วย', F(4), -1, 'fridge', 10],
+  ['กล้วยหอม', '3 ลูก', F(28), 3, 'fridge', 7],
+  ['ขนมปัง', '1 แถว', B(31), 3, 'fridge', 5],
+  ['มะเขือเทศ', '4 ลูก', F(16), 5, 'fridge', 10],
+  ['กะหล่ำปลี', '1 หัว', F(15), 6, 'fridge', 10],
+  ['แครอท', '2 หัว', F(13), 7, 'fridge', 10],
+  ['ไข่ไก่', '6 ฟอง', F(8), 11, 'fridge', 21],
+  ['อกไก่', '2 ชิ้น', F(11), 14, 'freezer', 120],
+  ['ชีส', '1 ก้อน', F(6), 20, 'fridge', 30]
+].map(([name, qty, icon, d, loc, total]) => ({ id: 'i' + (uid++), name, qty, icon, d, loc, total }));
+
+const PRESETS = [
+  { name: 'หมูสับ', icon: F(10), unit: 'ก.', qty: 300, step: 100, days: 3, frz: 120, tip: 'แบ่งเป็นมื้อแล้วแช่แข็ง เก็บชั้นล่างสุด' },
+  { name: 'ไก่', icon: F(11), unit: 'ชิ้น', qty: 2, step: 1, days: 3, frz: 120, tip: 'เก็บชั้นล่างสุด กันน้ำหยดใส่ของอื่น' },
+  { name: 'ปลา', icon: F(12), unit: 'ตัว', qty: 1, step: 1, days: 2, frz: 90, tip: 'ล้างซับให้แห้ง แช่ช่องล่างสุด' },
+  { name: 'นมสด', icon: F(1), unit: 'ลิตร', qty: 1, step: 1, days: 7, frz: 30, tip: 'เปิดแล้วใช้ภายใน 5–7 วัน เก็บชั้นใน' },
+  { name: 'ไข่', icon: F(8), unit: 'ฟอง', qty: 6, step: 1, days: 21, frz: 21, tip: 'เก็บในแผงชั้นกลาง ไม่ต้องล้างก่อนเก็บ' },
+  { name: 'โยเกิร์ต', icon: F(3), unit: 'ถ้วย', qty: 2, step: 1, days: 10, frz: 30, tip: 'ดูวันหมดอายุบนฉลากเป็นหลัก' },
+  { name: 'แครอท', icon: F(13), unit: 'หัว', qty: 2, step: 1, days: 10, frz: 60, tip: 'แยกจากผลไม้สุก ผักจะอยู่ได้นานขึ้น' },
+  { name: 'บร็อคโคลี', icon: F(14), unit: 'หัว', qty: 1, step: 1, days: 5, frz: 60, tip: 'ห่อกระดาษหมาดๆ ใส่ช่องผัก' },
+  { name: 'มะเขือเทศ', icon: F(16), unit: 'ลูก', qty: 4, step: 1, days: 10, frz: 60, tip: 'เก็บแยกจากผักใบ' },
+  { name: 'สตรอว์เบอร์รี่', icon: F(27), unit: 'กล่อง', qty: 1, step: 1, days: 4, frz: 90, tip: 'อย่าล้างก่อนเก็บ ล้างตอนจะกิน' },
+  { name: 'ขนมปัง', icon: B(31), unit: 'แถว', qty: 1, step: 1, days: 5, frz: 60, tip: 'แช่แข็งเป็นแผ่น ปิ้งได้ทันที' },
+  { name: 'เค้ก', icon: B(37), unit: 'ชิ้น', qty: 1, step: 1, days: 3, frz: 30, tip: 'ใส่กล่องปิดสนิท กันกลิ่นในตู้' }
+];
+
+const RECIPES = [
+  { name: 'ไข่เจียวหมูสับ', time: 10, hero: F(8), bg: '#fff0d9', uses: ['ไข่ไก่', 'หมูสับ', 'มะเขือเทศ'], how: 'ตีไข่กับหมูสับและมะเขือเทศหั่น ปรุงน้ำปลานิดหน่อย ทอดในน้ำมันร้อนจัดจนฟูกรอบ' },
+  { name: 'แซลมอนย่างซอสเห็ด', time: 20, hero: F(9), bg: '#ffe3df', uses: ['แซลมอน', 'เห็ด', 'นมสด'], how: 'ย่างแซลมอนให้หนังกรอบ ผัดเห็ดกับเนย เติมนมเคี่ยวให้ข้น ราดบนปลา' },
+  { name: 'สมูทตี้กล้วยนม', time: 5, hero: F(28), bg: '#fff6c9', uses: ['กล้วยหอม', 'นมสด'], how: 'ปั่นกล้วยสุกกับนมเย็นและน้ำแข็ง กล้วยสุกจัดช่วยให้หวานข้นโดยไม่ต้องเติมน้ำตาล' },
+  { name: 'แกงจืดกะหล่ำหมูสับ', time: 20, hero: F(15), bg: '#e2f2e9', uses: ['กะหล่ำปลี', 'หมูสับ', 'แครอท'], how: 'ปั้นหมูสับใส่น้ำซุปเดือด ตามด้วยแครอทและกะหล่ำปลี ปรุงซีอิ๊วขาว' },
+  { name: 'เฟรนช์โทสต์', time: 10, hero: B(31), bg: '#fff0d9', uses: ['ขนมปัง', 'ไข่ไก่', 'นมสด'], how: 'จุ่มขนมปังในไข่ผสมนม ทอดเนยไฟกลางจนเหลืองหอม' }
+];
+
+const TALK = [
+  it => it ? `ใช้${it.name}ก่อนนะ เหลืออีก ${it.d <= 0 ? 'ไม่ถึงวัน' : it.d + ' วัน'}!` : 'ตู้เย็นเรียบร้อยดี เก่งมาก!',
+  () => 'แตะเพื่อนๆ ข้างล่างดูสิ',
+  () => 'วันนี้ทำเมนูอร่อยกันไหม?',
+  () => 'อย่าลืมจดของที่ซื้อมาใหม่นะ'
+];
+
+function tone(d) {
+  if (d < 0) return { pillBg: '#ffe3df', pillInk: '#d63a2b', tile: '#ffe9e5', left: 'เลยกำหนด ' + (-d) + ' วัน' };
+  if (d <= 2) return { pillBg: '#ffecd1', pillInk: '#e06a00', tile: '#fff2df', left: d === 0 ? 'ใช้วันนี้' : d === 1 ? 'พรุ่งนี้' : 'อีก ' + d + ' วัน' };
+  if (d <= 5) return { pillBg: '#fff6c9', pillInk: '#9a7d00', tile: '#fffadf', left: 'อีก ' + d + ' วัน' };
+  return { pillBg: '#dff1e6', pillInk: '#2e8a55', tile: '#eaf6ee', left: 'อีก ' + d + ' วัน' };
+}
+const thDate = n => { const t = new Date(); t.setDate(t.getDate() + n); return t.toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'short' }); };
+
+const URGENT = {
+  'บลูเบอร์รี่': { bg: '#1764c0', edge: '#0f4a99', glow: 'rgba(15,74,153,.5)', ink: '#fff', rowEdge: '#a9c6ea', btn: '#0f4a99', btnInk: '#fff' },
+  'มะม่วง': { bg: '#ffc61a', edge: '#d9a100', glow: 'rgba(217,161,0,.5)', ink: '#12357a', rowEdge: '#f0d27a', btn: '#12357a', btnInk: '#fff' },
+  'สตรอว์เบอร์รี่': { bg: '#ff6fa3', edge: '#d94a80', glow: 'rgba(217,74,128,.5)', ink: '#fff', rowEdge: '#f5b8cf', btn: '#d94a80', btnInk: '#fff' },
+  'มิ้นต์': { bg: '#2e9b5f', edge: '#1f7a47', glow: 'rgba(31,122,71,.5)', ink: '#fff', rowEdge: '#b2dcc3', btn: '#1f7a47', btnInk: '#fff' },
+  'ส้มแดง': { bg: '#ff6b3d', edge: '#d94a1f', glow: 'rgba(217,74,31,.55)', ink: '#fff', rowEdge: '#f0b9a5', btn: '#d94a1f', btnInk: '#fff' }
+};
+const NAVS = {
+  'ขาวนวล': { bg: '#ffffff', edge: '#efe6d6', ink: '#1764c0', dim: '#8391a3', plus: '#ff8a1f', plusEdge: '#d9640a', gray: true },
+  'น้ำเงินน้องตู้': { bg: '#1764c0', edge: '#0f4a99', ink: '#ffffff', dim: '#c4d8f5', plus: '#ff8a1f', plusEdge: '#d9640a' },
+  'ส้มสดใส': { bg: '#ff8a1f', edge: '#d9640a', ink: '#12357a', dim: '#5a2600', plus: '#1764c0', plusEdge: '#0f4a99' },
+  'กรมท่า': { bg: '#12357a', edge: '#0b2456', ink: '#ffc61a', dim: '#b3c2e0', plus: '#ff8a1f', plusEdge: '#d9640a' },
+  'ลาเวนเดอร์': { bg: '#e4dbfc', edge: '#c9bbf0', ink: '#4b2fb5', dim: '#574c8a', plus: '#ff8a1f', plusEdge: '#d9640a', gray: true }
+};
+const BGS = {
+  'ครีมวานิลลา': { base: '#fffaf1', glow: '#e2f2e9' },
+  'ฟ้าพาสเทล': { base: '#eef6ff', glow: '#d3e8ff' },
+  'ชมพูพีช': { base: '#fff1ee', glow: '#ffdccf' },
+  'เขียวมิ้นต์': { base: '#effaf3', glow: '#d2efdd' },
+  'ม่วงลาเวนเดอร์': { base: '#f6f2ff', glow: '#e4dbfc' }
+};
+class Component extends DCLogic {
+  state = {
+    screen: this.props.startScreen || 'home', items: SEED, used: 12, wasted: 3, filter: 'all',
+    talk: 0, bubbleKey: 0, jump: 0, addOpen: false, draft: null, pickKey: 0, openRecipe: 0,
+    toast: null, confetti: [], leaving: {}, poke: {}, bell: 0
+  };
+  scrollRef = React.createRef();
+  componentDidMount() { this._rs = () => this.setState({ framed: window.innerWidth > 520 }); this._rs(); window.addEventListener('resize', this._rs); }
+  componentWillUnmount() { window.removeEventListener('resize', this._rs); }
+  componentDidUpdate(pp) { if (pp.navColor !== this.props.navColor && this.state.navPick) this.setState({ navPick: null }); if (pp.appBg !== this.props.appBg && this.state.bgPick) this.setState({ bgPick: null }); if (pp.startScreen !== this.props.startScreen && this.props.startScreen) this.go(this.props.startScreen); }
+  go(screen, extra = {}) { this.setState({ screen, ...extra }); if (this.scrollRef.current) this.scrollRef.current.scrollTop = 0; }
+  say(text, pose = PO(9)) { this.setState({ toast: { text, pose, key: Date.now() } }); clearTimeout(this._tt); this._tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  burst(n = 36) {
+    const cols = ['#ff8a1f', '#1764c0', '#ffc61a', '#2e9b5f', '#ff6fa3', '#fff'];
+    const pieces = Array.from({ length: n }, (_, i) => {
+      const w = 7 + Math.random() * 8, round = Math.random() > .5;
+      return { position: 'absolute', left: (10 + Math.random() * 80) + '%', top: '-20px', width: w + 'px', height: (round ? w : w * 1.8) + 'px', borderRadius: round ? '50%' : '3px', background: cols[i % cols.length], border: cols[i % cols.length] === '#fff' ? '1px solid #ffd49a' : 'none', '--dx': (Math.random() * 160 - 80) + 'px', '--rot': (Math.random() * 720 - 360) + 'deg', animation: `fall ${1.4 + Math.random() * 1.2}s cubic-bezier(.3,.6,.5,1) ${Math.random() * .3}s forwards` };
+    });
+    this.setState({ confetti: pieces }); clearTimeout(this._ct); this._ct = setTimeout(() => this.setState({ confetti: [] }), 3000);
+  }
+  remove(id, kind) {
+    const it = this.state.items.find(i => i.id === id); if (!it) return;
+    this.setState(s => ({ leaving: { ...s.leaving, [id]: kind } }));
+    if (kind === 'used') { this.burst(); this.say(`เยี่ยมเลย! ใช้${it.name}ทันเวลา`, PO(9)); }
+    else this.say(`ไม่เป็นไรนะ ครั้งหน้าน้องตู้จะเตือนเร็วขึ้น`, PO(15));
+    setTimeout(() => this.setState(s => ({ items: s.items.filter(i => i.id !== id), used: s.used + (kind === 'used' ? 1 : 0), wasted: s.wasted + (kind === 'waste' ? 1 : 0) })), 520);
+  }
+  pokeIt(key) { this.setState(s => ({ poke: { ...s.poke, [key]: (s.poke[key] || 0) + 1 } })); }
+  openAdd() { const p = PRESETS[0]; this.setState({ addOpen: true, draft: { ...p, loc: 'fridge' }, pickKey: this.state.pickKey + 1 }); }
+  submitAdd() {
+    const d = this.state.draft; if (!d || !d.name.trim()) return;
+    const days = d.days;
+    const it = { id: 'i' + (uid++), name: d.name.trim(), qty: d.qty + ' ' + d.unit, icon: d.icon, d: days, loc: d.loc, total: days };
+    this.setState(s => ({ items: [it, ...s.items], addOpen: false }));
+    this.burst(24); this.say(`เก็บ${it.name}เข้าตู้แล้ว น้องตู้จำให้นะ!`, PO(12));
+    this.go('fridge', { filter: 'all' });
+  }
+
+  renderVals() {
+    const s = this.state, items = [...s.items].sort((a, b) => a.d - b.d);
+    const exp = items.filter(i => i.d < 0), soon = items.filter(i => i.d >= 0 && i.d <= 2), week = items.filter(i => i.d > 2 && i.d <= 7), frz = items.filter(i => i.loc === 'freezer');
+    const decorate = i => ({ ...i, ...tone(i.d) });
+    const firstUrgent = items.find(i => i.d >= 0);
+    const navName = s.navPick || this.props.navColor || 'ส้มสดใส', navc = NAVS[navName] || NAVS['ขาวนวล'];
+    const ink = navc.ink, dim = navc.dim;
+    const nav = (key, label, icon) => ({ label, icon, ink: s.screen === key ? ink : dim, go: () => this.go(key), iconStyle: { display: 'block', transition: 'transform .3s cubic-bezier(.2,.9,.3,1.6)', transform: s.screen === key ? 'translateY(-3px) scale(1.15) rotate(-6deg)' : 'scale(.92)', filter: s.screen === key ? 'none' : (navc.gray ? 'grayscale(.6)' : 'saturate(.75)') } });
+    const fList = items.filter(i => s.filter === 'all' || (s.filter === 'soon' && i.d >= 0 && i.d <= 3) || (s.filter === 'expired' && i.d < 0) || (s.filter === 'freezer' && i.loc === 'freezer'));
+    const names = new Map(items.filter(i => i.d >= 0).map(i => [i.name, i]));
+    const recipes = RECIPES.map((r, idx) => {
+      const uses = r.uses.map(n => names.get(n)).filter(Boolean);
+      const score = uses.reduce((a, u) => a + (u.d <= 1 ? 6 : u.d <= 3 ? 4 : u.d <= 5 ? 2 : 1), 0);
+      return { ...r, idx, usesRaw: uses, score };
+    }).filter(r => r.usesRaw.length).sort((a, b) => b.score - a.score).map((r, k) => ({
+      ...r, delay: k * 0.07 + 's', useCount: r.usesRaw.length, uses: r.usesRaw.map(decorate), open: s.openRecipe === r.idx, rot: s.openRecipe === r.idx ? 90 : 0,
+      toggle: () => this.setState({ openRecipe: s.openRecipe === r.idx ? -1 : r.idx }),
+      cook: () => {
+        const ids = r.usesRaw.map(u => u.id);
+        this.setState(st => ({ leaving: { ...st.leaving } }));
+        this.burst(48); this.say(`ทำ${r.name}! ใช้ของในตู้ไป ${ids.length} อย่าง`, PO(14));
+        this.setState(st => ({ items: st.items.filter(i => !ids.includes(i.id)), used: st.used + ids.length, openRecipe: -1 }));
+      }
+    }));
+    const tot = s.used + s.wasted, pct = tot ? Math.round(s.used / tot * 100) : 0;
+    const d = s.draft;
+    const filterDef = [['all', 'ทั้งหมด', items.length, F(5), '#1764c0', '#fff', '#0f4a99'], ['soon', 'ใกล้หมด', items.filter(i => i.d >= 0 && i.d <= 3).length, F(10), '#ffecd1', '#c05a00', '#f2cf9d'], ['expired', 'เลยกำหนด', exp.length, F(4), '#ffe3df', '#c0392b', '#f5c6bf'], ['freezer', 'แช่แข็ง', frz.length, F(11), '#e1f0f9', '#1764c0', '#b9d6f2']];
+    const mw = this.props.mascotSize ?? 200;
+    return {
+      scrollRef: this.scrollRef,
+      navc,
+      navOptions: Object.entries(NAVS).map(([name, v]) => { const on = navName === name; return { name, ...v, border: on ? '#ff8a1f' : '#fff', edgeSel: on ? '#f2cf9d' : '#e9dfcd', pick: () => this.setState({ navPick: name }) }; }),
+      framed: false,
+      outerPad: '0',
+      screenRadius: '0',
+      frameStyle: false
+        ? { position: 'relative', width: '390px', height: '844px', flex: 'none', borderRadius: '56px', background: '#12223f', padding: '11px', boxSizing: 'border-box', boxShadow: '0 30px 60px -20px rgba(24,52,94,.45),0 0 0 2px #2b3d5f inset' }
+        : { position: 'fixed', top: 0, bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '480px', height: '100dvh', boxShadow: '0 0 40px rgba(24,52,94,.12)' },
+      bgc: BGS[s.bgPick || this.props.appBg] || BGS['ม่วงลาเวนเดอร์'],
+      bgOptions: Object.entries(BGS).map(([name, v]) => { const on = (s.bgPick || this.props.appBg || 'ม่วงลาเวนเดอร์') === name; return { name, ...v, border: on ? '#ff8a1f' : '#fff', edge: on ? '#f2cf9d' : '#e9dfcd', pick: () => this.setState({ bgPick: name }) }; }),
+      uc: URGENT[this.props.urgentColor] || URGENT['บลูเบอร์รี่'],
+      isHome: s.screen === 'home', isFridge: s.screen === 'fridge', isRecipes: s.screen === 'recipes', isStats: s.screen === 'stats',
+      todayLabel: thDate(0).toUpperCase(),
+      urgentCount: exp.length + soon.length,
+      bellStyle: { animation: s.bell ? `ring .8s ease ${''}` : 'none', transformOrigin: '50% 10%' },
+      ringBell: () => { this.setState({ bell: 0 }, () => this.setState({ bell: Date.now() })); this.say(`มี ${soon.length} อย่างควรใช้ใน 2 วัน และเลยกำหนด ${exp.length} อย่าง`, PO(8)); },
+      bubbleKey: s.bubbleKey, bubbleText: TALK[s.talk % TALK.length](firstUrgent),
+      mascotW: mw,
+      mascotJump: { animation: s.jump ? `${s.jump % 2 ? 'jumpA' : 'jumpB'} .7s cubic-bezier(.3,.7,.4,1) both` : 'none' },
+      tapMascot: () => this.setState(st => ({ talk: st.talk + 1, bubbleKey: st.bubbleKey + 1, jump: st.jump + 1 })),
+      showFriends: this.props.showFriends ?? true,
+      pokeCarrot: () => this.say('แครอทบอกว่า ยังสดอยู่ อีก 7 วัน!', PO(17)),
+      pokeMilk: () => this.say('นมสดเหลืออีก 2 วัน ทำสมูทตี้ไหม?', PO(12)),
+      pokeEgg: () => this.say('ไข่ไก่ 6 ฟอง อยู่ได้อีก 11 วันจ้า', PO(11)),
+      pokeCabbage: () => this.say('กะหล่ำปลีพร้อมลงหม้อแกงจืดแล้ว!', PO(19)),
+      openAdd: () => this.openAdd(), closeAdd: () => this.setState({ addOpen: false }),
+      goFridge: () => this.go('fridge', { filter: 'soon' }), goRecipes: () => this.go('recipes'),
+      counters: [
+        ['ทั้งหมด', items.length, F(5), '#e1f0f9', '#b9d6f2', '#12357a', 'all', '30px 24px 30px 24px'],
+        ['เลยวันที่กำหนด', exp.length, F(4), '#ffe3df', '#f5c6bf', '#c0392b', 'expired', '24px 30px 24px 30px'],
+        ['ควรใช้ใน 2 วัน', soon.length, F(1), '#ffecd1', '#f2cf9d', '#c05a00', 'soon', '24px 30px 24px 30px'],
+        ['ควรใช้ใน 3–7 วัน', week.length, F(15), '#dff1e6', '#bfe0cb', '#2e7d4f', 'all', '30px 24px 30px 24px']
+      ].map(([label, n, icon, bg, edge, ink2, f, radius], k) => ({ label, n, icon, bg, edge, ink: ink2, radius, delay: k * 0.06 + 's', go: () => this.go('fridge', { filter: f }) })),
+      urgentList: items.filter(i => i.d <= 3).slice(0, 3).map(decorate),
+      hasFeatured: recipes.length > 0,
+      featured: recipes[0] ? { name: recipes[0].name, time: recipes[0].time, icons: recipes[0].usesRaw.map(u => u.icon) } : { name: '', time: 0, icons: [] },
+      totalCount: items.length,
+      filters: filterDef.map(([k, label, n, icon, bgOn, inkOn, edge]) => {
+        const on = s.filter === k;
+        return { label, n, icon, bg: on ? bgOn : '#fff', ink: on ? (k === 'all' ? '#fff' : inkOn) : '#18345e', edge: on ? edge : '#efe6d6', pick: () => this.setState({ filter: k }) };
+      }),
+      listEmpty: fList.length === 0,
+      fridgeList: fList.map((i, k) => {
+        const t = tone(i.d), lv = s.leaving[i.id], pk = s.poke[i.id] || 0;
+        return {
+          ...i, ...t, tileBg: t.tile, frozen: i.loc === 'freezer',
+          bar: Math.max(6, Math.min(100, Math.round((1 - Math.max(i.d, 0) / Math.max(i.total, 1)) * 100))),
+          rowStyle: { display: 'flex', alignItems: 'center', gap: '12px', background: '#fff', borderRadius: '28px', padding: '12px', boxShadow: '0 5px 0 #efe6d6', animation: lv === 'used' ? 'leaveUsed .5s ease-in forwards' : lv === 'waste' ? 'leaveWaste .55s ease-in forwards' : 'none' },
+          iconStyle: { maxWidth: '62px', maxHeight: '58px', cursor: 'pointer', filter: 'drop-shadow(0 3px 3px rgba(0,0,0,.12))', animation: pk ? (pk % 2 ? 'wiggle .5s ease' : 'popIn .5s ease') : 'none' },
+          poke: () => this.pokeIt(i.id),
+          use: () => this.remove(i.id, 'used'), waste: () => this.remove(i.id, 'waste')
+        };
+      }),
+      recipes,
+      used: s.used, wasted: s.wasted, pct,
+      donutBg: `conic-gradient(#2e9b5f 0 ${pct}%, #e8463a ${pct}% 100%)`,
+      statsTitle: pct >= 80 ? 'เก่งมาก! ใช้ของทันเกือบทุกอย่าง' : 'ใช้ของใกล้หมดก่อนนะ',
+      navLeft: [nav('home', 'หน้าหลัก', 'assets/nav/home.png'), nav('fridge', 'ในตู้เย็น', 'assets/nav/fridge.png')],
+      navRight: [nav('recipes', 'เมนู', 'assets/nav/alt14.png'), nav('stats', 'สถิติ', 'assets/nav/stats.png')],
+      addOpen: s.addOpen && !!d,
+      pickKey: s.pickKey,
+      draft: d || { icon: '', name: '', qty: 0, unit: '', days: 0, tip: '' },
+      draftExp: d ? thDate(d.days) : '',
+      presets: PRESETS.map(p => {
+        const on = d && d.icon === p.icon;
+        return { ...p, bg: on ? '#ffe3bd' : '#fff', border: on ? '#ff8a1f' : '#fff', edge: on ? '#f2cf9d' : '#efe6d6', pick: () => this.setState(st => ({ draft: { ...p, loc: st.draft.loc, days: st.draft.loc === 'freezer' ? p.frz : p.days }, pickKey: st.pickKey + 1 })) };
+      }),
+      setName: e => { const v = e.target.value; this.setState(st => ({ draft: { ...st.draft, name: v } })); },
+      qtyUp: () => this.setState(st => ({ draft: { ...st.draft, qty: st.draft.qty + st.draft.step } })),
+      qtyDown: () => this.setState(st => ({ draft: { ...st.draft, qty: Math.max(st.draft.step, st.draft.qty - st.draft.step) } })),
+      daysUp: () => this.setState(st => ({ draft: { ...st.draft, days: st.draft.days + 1 } })),
+      daysDown: () => this.setState(st => ({ draft: { ...st.draft, days: Math.max(0, st.draft.days - 1) } })),
+      locFridge: { bg: d && d.loc === 'fridge' ? '#e1f0f9' : '#fff', border: d && d.loc === 'fridge' ? '#1764c0' : '#fff' },
+      locFreezer: { bg: d && d.loc === 'freezer' ? '#e1f0f9' : '#fff', border: d && d.loc === 'freezer' ? '#1764c0' : '#fff' },
+      setFridge: () => this.setState(st => { const p = PRESETS.find(x => x.icon === st.draft.icon); return { draft: { ...st.draft, loc: 'fridge', days: p ? p.days : st.draft.days } }; }),
+      setFreezer: () => this.setState(st => { const p = PRESETS.find(x => x.icon === st.draft.icon); return { draft: { ...st.draft, loc: 'freezer', days: p ? p.frz : st.draft.days } }; }),
+      submitAdd: () => this.submitAdd(),
+      hasToast: !!s.toast, toast: s.toast || { text: '', pose: '', key: 0 },
+      confetti: s.confetti
+    };
+  }
+}
+</script>
+</body>
+</html>
